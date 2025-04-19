@@ -29,14 +29,14 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
 
             await sdk.actions.ready();
             setIsLoaded(true);
+        };
 
-            if (sdk && !isLoaded) {
-                setIsLoaded(true);
-                load();
-            }
-            return () => {
-                sdk.removeAllListeners();
-            };
+        if (sdk && !isLoaded) {
+            setIsLoaded(true);
+            load();
+        }
+        return () => {
+            sdk.removeAllListeners();
         };
     }, []);
 
@@ -50,7 +50,7 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
 
     if (!isLoaded) {
         return (
-            <div className="min-h-screen flex justify-center items-center bg-[#D5C0A0]">
+            <div className="min-h-screen flex justify-center items-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-400" />
             </div>
         );
