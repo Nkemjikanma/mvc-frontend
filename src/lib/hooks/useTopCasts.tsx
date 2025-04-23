@@ -36,16 +36,10 @@ const getUserCasts = async (
     }
 };
 
-export const useTopCasts = (
-    fid?: number,
-    options?: {
-        sortBy?: string;
-        order?: string;
-    },
-) => {
+export const useTopCasts = (fid?: number) => {
     return useQuery({
-        queryKey: ["topCasts", fid, options?.sortBy, options?.order],
-        queryFn: () => getUserCasts(fid, options),
+        queryKey: ["topCasts", fid],
+        queryFn: () => getUserCasts(fid),
         staleTime: 3000,
         enabled: !!fid,
     });

@@ -2,6 +2,7 @@ import sdk, { type Context } from "@farcaster/frame-sdk";
 import {
     type ReactNode,
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useMemo,
@@ -11,6 +12,7 @@ import {
 export type MiniAppContextType = {
     context: Context.FrameContext | undefined;
     isLoaded: boolean;
+    handleAddFrame: () => void;
 };
 
 const MiniAppContext = createContext<MiniAppContextType | undefined>(undefined);
@@ -18,6 +20,7 @@ const MiniAppContext = createContext<MiniAppContextType | undefined>(undefined);
 export function MiniAppProvider({ children }: { children: ReactNode }) {
     const [context, setContext] = useState<MiniAppContextType["context"]>();
     const [isLoaded, setIsLoaded] = useState(false);
+    const [added, setAdded] = useState(false);
 
     useEffect(() => {
         const load = async () => {
@@ -25,10 +28,19 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
 
             if (context) {
                 setContext(context);
+                setAdded(context.client.added);
             }
 
             await sdk.actions.ready();
             setIsLoaded(true);
+
+            sdk.on("frameAdded", ({ notificationDetails }) => {
+                setAdded(true);
+            });
+
+            sdk.on("frameRemoved", () => {
+                setAdded(false);
+            });
         };
 
         if (sdk && !isLoaded) {
@@ -40,12 +52,20 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
         };
     }, []);
 
+    const handleAddFrame = useCallback(() => {
+        if (context?.client.added) {
+            return;
+        }
+        sdk.actions.addFrame();
+    }, [context?.client.added]);
+
     const value = useMemo(
         () => ({
             context,
             isLoaded,
+            handleAddFrame,
         }),
-        [context, isLoaded],
+        [context, isLoaded, handleAddFrame],
     );
 
     if (!isLoaded) {

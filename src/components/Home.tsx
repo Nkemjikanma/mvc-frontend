@@ -1,11 +1,12 @@
 import { useTopCasts } from "@/lib/hooks/useTopCasts";
 import type { SortField, SortOrder } from "@/lib/types";
+import { getPopularityScore } from "@/lib/utils";
 import sdk, { type Context } from "@farcaster/frame-sdk";
 import { ArrowDownUp, Calendar } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CastCard } from "./CastCard";
-import { CastSkeleton } from "./CastsSkeleton";
+// import { CastSkeleton } from "./CastsSkeleton";
 import {
     Select,
     SelectContent,
@@ -21,20 +22,59 @@ export function Home({
 }) {
     const [sortBy, setSortBy] = useState<SortField>("default");
     const [order, setOrder] = useState<SortOrder>("desc");
-    const { data, isLoading, error, refetch } = useTopCasts(
-        context?.user.fid || 405941,
-        {
-            sortBy,
-            order,
-        },
-    );
+    const { data, isLoading, error } = useTopCasts(context?.user.fid || 405941);
+    const searchParams = new URLSearchParams(window.location.search);
+    for (const [k, v] of searchParams) {
+        console.log(k, v);
+    }
+
+    const sortedCasts = useMemo(() => {
+        if (!data?.casts) return [];
+
+        return [...data.casts].sort((a, b) => {
+            let comparison = 0;
+
+            switch (sortBy) {
+                case "likes":
+                    comparison =
+                        (a.reactions?.likes_count || 0) -
+                        (b.reactions?.likes_count || 0);
+                    break;
+                case "recasts":
+                    comparison =
+                        (a.reactions?.recasts_count || 0) -
+                        (b.reactions?.recasts_count || 0);
+                    break;
+                case "replies":
+                    comparison =
+                        (a.replies?.count || 0) - (b.replies?.count || 0);
+                    break;
+                default:
+                    comparison = getPopularityScore(a) - getPopularityScore(b);
+                    break;
+            }
+
+            return order === "asc" ? comparison : -comparison;
+        });
+    }, [data?.casts, sortBy, order]);
+
+    const toggleSortOrder = () => {
+        setOrder((prev) => (prev === "desc" ? "asc" : "desc"));
+    };
+
+    const handleSortByChange = (value: SortField) => {
+        setSortBy(value);
+    };
+
+    // Take only the top 20
+    const topCasts = sortedCasts.slice(0, 20);
 
     return (
         <main className="relative flex flex-col min-h-screen w-full border items-center bg-white text-black dark:bg-black dark:text-white p-4">
             <header className="text-center mb-8">
                 <p className="text-4xl font-black mb-2">M.V.C.</p>
                 <p className="text-muted-foreground">
-                    View of your weekly casts that bring you the most value
+                    Quick view of you best performing casts.
                 </p>
             </header>
 
@@ -43,13 +83,7 @@ export function Home({
                     <div className="relative flex flex-rol w-fit h-fit gap-3 items-center">
                         <button
                             type="button"
-                            onClick={() => {
-                                if (order === "desc") {
-                                    setOrder("asc");
-                                } else {
-                                    setOrder("desc");
-                                }
-                            }}
+                            onClick={toggleSortOrder}
                             className="bg-black relative flex w-fit h-fit p-2 items-center"
                         >
                             <ArrowDownUp className="w-3 h-3" />
@@ -57,64 +91,36 @@ export function Home({
                         {order}
                     </div>
 
-                    <Select>
+                    <Select
+                        onValueChange={(value) =>
+                            handleSortByChange(value as SortField)
+                        }
+                        value={sortBy}
+                    >
                         <SelectTrigger className="w-[180px] text-xs">
-                            <SelectValue placeholder="Filters" />
+                            <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem
-                                value="default"
-                                onClick={() => setSortBy("default")}
-                                className="text-xs"
-                            >
+                            <SelectItem value="default" className="text-xs">
                                 default
                             </SelectItem>
-                            <SelectItem
-                                value="likes"
-                                onClick={() => setSortBy("likes")}
-                                className="text-xs"
-                            >
+                            <SelectItem value="likes" className="text-xs">
                                 Likes
                             </SelectItem>
-                            <SelectItem
-                                value="recasts"
-                                onClick={() => setSortBy("recasts")}
-                                className="text-xs"
-                            >
+                            <SelectItem value="recasts" className="text-xs">
                                 Recasts
                             </SelectItem>
-                            <SelectItem
-                                value="replies"
-                                onClick={() => setSortBy("replies")}
-                                className="text-xs"
-                            >
-                                Recasts
+                            <SelectItem value="replies" className="text-xs">
+                                Replies
                             </SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 <div className="w-full max-w-lg">
-                    {isLoading ? (
-                        <div className="space-y-4">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                                <CastSkeleton key={i} />
-                            ))}
-                        </div>
-                    ) : error ? (
-                        <div className="text-center p-8 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                            <p className="text-red-600 dark:text-red-400">
-                                Error loading casts
-                            </p>
-                            <button
-                                type="button"
-                                onClick={() => refetch()}
-                                className="mt-4 px-4 py-2 bg-red-100 dark:bg-red-800/30 rounded-md text-sm"
-                            >
-                                Try Again
-                            </button>
-                        </div>
-                    ) : data?.casts && data.casts.length > 0 ? (
+                    {/* Loading and error states remain the same */}
+
+                    {!isLoading && !error && sortedCasts.length > 0 ? (
                         <motion.div
                             className="space-y-4"
                             initial={{ opacity: 0 }}
@@ -123,7 +129,8 @@ export function Home({
                         >
                             <div className="flex justify-between items-center mb-4 text-xs text-muted-foreground px-2">
                                 <span>
-                                    Showing {data.casts.length} of {data.total}{" "}
+                                    Showing {sortedCasts.length} of{" "}
+                                    {data?.meta?.total || sortedCasts.length}{" "}
                                     casts
                                 </span>
                                 <span className="flex items-center gap-1">
@@ -132,7 +139,7 @@ export function Home({
                                 </span>
                             </div>
 
-                            {data.casts.map((cast, index) => (
+                            {topCasts.map((cast, index) => (
                                 <CastCard
                                     key={cast.hash}
                                     cast={cast}

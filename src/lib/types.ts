@@ -15,10 +15,11 @@ export type Cast = {
     app: UserDehydrated;
     thread_hash: string;
     parent_hash: string | null;
-    parent_url: string;
-    root_parent_url: string;
+    parent_url: string | null;
+    root_parent_url: string | null;
     parent_author: {
         fid: number | null;
+        username?: string;
     };
     text: string;
     timestamp: string;
@@ -91,40 +92,96 @@ type Reactions = {
     recasts: any[];
 };
 
-export type Embed = {
+export type Embed =
+    | {
+          // Direct image embed
+          url: string;
+          metadata: {
+              content_type: string;
+              content_length: number;
+              _status: string;
+              image: {
+                  width_px: number;
+                  height_px: number;
+              };
+          };
+      }
+    | {
+          // OpenGraph link embed
+          url: string;
+          metadata: {
+              content_type: string;
+              content_length: number | null;
+              _status: string;
+              html: {
+                  ogUrl: string;
+                  oembed?: {
+                      html: string;
+                      type: string;
+                      title: string;
+                      width: number;
+                      height: number;
+                      method: string;
+                      version: string;
+                      iframe_url: string;
+                      provider_url: string;
+                      provider_name: string;
+                      thumbnail_url: string;
+                      thumbnail_width: number;
+                      thumbnail_height: number;
+                  };
+                  ogType: string;
+                  favicon: string;
+                  ogAudio?: string;
+                  ogImage: {
+                      url: string;
+                  }[];
+                  ogTitle: string;
+                  ogLocale: string;
+                  ogSiteName: string;
+                  ogAudioType?: string;
+                  ogDescription: string;
+              };
+          };
+      }
+    | {
+          // Cast embed
+          cast_id: {
+              fid: number;
+              hash: string;
+          };
+          cast: CastEmbedded;
+      };
+
+export type CastEmbedded = {
+    object: "cast_embedded";
+    hash: string;
+    author: UserDehydrated;
+    app: UserDehydrated;
+    thread_hash: string;
+    parent_hash: string | null;
+    parent_url: string | null;
+    root_parent_url: string | null;
+    parent_author: ParentAuthor;
+    text: string;
+    timestamp: string;
+    embeds: EmbedInCast[];
+    channel: any | null;
+};
+
+export type EmbedInCast = {
     url: string;
     metadata: {
         content_type: string;
-        content_length: number | null;
+        content_length: number;
         _status: string;
-        html: {
-            ogUrl: string;
-            oembed?: {
-                html: string;
-                type: string;
-                title: string;
-                width: number;
-                height: number;
-                method: string;
-                version: string;
-                iframe_url: string;
-                provider_url: string;
-                provider_name: string;
-                thumbnail_url: string;
-                thumbnail_width: number;
-                thumbnail_height: number;
-            };
-            ogType: string;
-            favicon: string;
-            ogAudio?: string;
-            ogImage: {
-                url: string;
-            }[];
-            ogTitle: string;
-            ogLocale: string;
-            ogSiteName: string;
-            ogAudioType?: string;
-            ogDescription: string;
+        image: {
+            width_px: number;
+            height_px: number;
         };
     };
+};
+
+export type ParentAuthor = {
+    fid: number | null;
 };
