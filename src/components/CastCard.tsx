@@ -177,24 +177,24 @@ export const CastCard = ({
                                 );
                             }
 
-                            if (isCastEmbed(embed)) {
-                                return (
-                                    <div
-                                        key={i}
-                                        className="rounded-md border border-gray-200 dark:border-gray-800 p-3 bg-gray-50 dark:bg-gray-900/50 text-xs"
-                                    >
-                                        <p className="font-medium">
-                                            @
-                                            {embed.cast.author?.username ||
-                                                "user"}
-                                            wrote:
-                                        </p>
-                                        <p className="mt-1 line-clamp-2">
-                                            {embed.cast.text}
-                                        </p>
-                                    </div>
-                                );
-                            }
+                            // if (isCastEmbed(embed)) {
+                            //     return (
+                            //         <div
+                            //             key={i}
+                            //             className="rounded-md border border-gray-200 dark:border-gray-800 p-3 bg-gray-50 dark:bg-gray-900/50 text-xs"
+                            //         >
+                            //             <p className="font-medium">
+                            //                 @
+                            //                 {embed.cast.author?.username ||
+                            //                     "user"}
+                            //                 wrote:
+                            //             </p>
+                            //             <p className="mt-1 line-clamp-2">
+                            //                 {embed.cast.text}
+                            //             </p>
+                            //         </div>
+                            //     );
+                            // }
 
                             // Add other embed types as needed based on your actual data
                             return null;
