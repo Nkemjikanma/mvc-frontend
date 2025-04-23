@@ -49,7 +49,7 @@ export const CastCard = ({
                     <span>Reply to another cast</span>
                 </div>
             )}
-            <div className="p-4 w-11/12">
+            <div className="p-4">
                 <div className="flex items-start gap-3 mb-3">
                     {cast.author?.pfp_url && (
                         <img
