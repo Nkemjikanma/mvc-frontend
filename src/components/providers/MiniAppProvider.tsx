@@ -13,6 +13,7 @@ export type MiniAppContextType = {
     context: Context.FrameContext | undefined;
     isLoaded: boolean;
     handleAddFrame: () => void;
+    added: boolean;
 };
 
 const MiniAppContext = createContext<MiniAppContextType | undefined>(undefined);
@@ -36,6 +37,7 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
 
             sdk.on("frameAdded", ({ notificationDetails }) => {
                 setAdded(true);
+                console.log(notificationDetails);
             });
 
             sdk.on("frameRemoved", () => {
@@ -64,8 +66,9 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
             context,
             isLoaded,
             handleAddFrame,
+            added,
         }),
-        [context, isLoaded, handleAddFrame],
+        [context, isLoaded, handleAddFrame, added],
     );
 
     if (!isLoaded) {

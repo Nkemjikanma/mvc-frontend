@@ -3,27 +3,12 @@ import type { CastResponse } from "../types";
 
 const server = "http://localhost:8787";
 
-const getUserCasts = async (
-    fid?: number,
-    options?: {
-        sortBy?: string;
-        order?: string;
-    },
-): Promise<CastResponse> => {
+const getUserCasts = async (fid?: number): Promise<CastResponse> => {
     if (!fid) {
         throw new Error("No fid");
     }
     try {
-        const queryParams = new URLSearchParams();
-        if (options?.order) {
-            queryParams.set("order", options.order);
-        }
-        if (options?.sortBy) {
-            queryParams.set("sortBy", options.sortBy);
-        }
-        const response = await fetch(
-            `${server}/${fid}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`,
-        );
+        const response = await fetch(`${server}/${fid}`);
 
         if (!response.ok) {
             throw new Error("Failed to fetch casts");

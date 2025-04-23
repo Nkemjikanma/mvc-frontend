@@ -3,8 +3,8 @@ export type SortField = "default" | "likes" | "recasts" | "replies";
 
 export type CastResponse = {
     casts: Cast[];
-    next: {
-        cursor: string;
+    meta: {
+        total: number;
     };
 };
 

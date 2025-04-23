@@ -1,7 +1,7 @@
 import { useTopCasts } from "@/lib/hooks/useTopCasts";
 import type { SortField, SortOrder } from "@/lib/types";
 import { getPopularityScore } from "@/lib/utils";
-import sdk, { type Context } from "@farcaster/frame-sdk";
+import type { Context } from "@farcaster/frame-sdk";
 import { ArrowDownUp, Calendar } from "lucide-react";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
