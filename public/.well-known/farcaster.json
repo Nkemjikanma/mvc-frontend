@@ -10,9 +10,9 @@
         "iconUrl": "https://mvc.orbiter.website/image.png",
         "homeUrl": "https://mvc.orbiter.website",
         "imageUrl": "https://mvc.orbiter.website/image.png",
-        "buttonTitle": "View cast performance",
+        "buttonTitle": "View cast perf.",
         "splashImageUrl": "https://mvc.orbiter.website/image.png",
-        "splashBackgroundColor": "#eeccff",
+        "splashBackgroundColor": "#000000",
         "webhookUrl": "https://mvc.orbiter.website/api/webhook"
     }
 }
