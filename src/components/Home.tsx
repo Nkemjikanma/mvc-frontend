@@ -6,6 +6,7 @@ import { ArrowDownUp, Calendar } from "lucide-react";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { CastCard } from "./CastCard";
+import { PostInsights } from "./PostInsights";
 // import { CastSkeleton } from "./CastsSkeleton";
 import {
     Select,
@@ -70,13 +71,15 @@ export function Home({
     const topCasts = sortedCasts.slice(0, 20);
 
     return (
-        <main className="relative flex flex-col min-h-screen w-full border items-center bg-white text-black dark:bg-black dark:text-white p-4">
+        <main className="relative flex flex-col min-h-screen w-full max-w-lg items-center bg-white text-black dark:bg-black dark:text-white p-4">
             <header className="text-center mb-8">
-                <p className="text-4xl font-black mb-2">M.V.C.</p>
+                <p className="text-4xl font-black mb-2">M ・ V ・ C</p>
                 <p className="text-muted-foreground">
                     Quick view of you best performing casts.
                 </p>
             </header>
+
+            <PostInsights casts={data?.casts || []} />
 
             <div className="flex flex-col relative w-full rounded-none justify-end mb-6 gap-5">
                 <div className="relative w-full flex flex-row items-center justify-between">
@@ -117,7 +120,7 @@ export function Home({
                     </Select>
                 </div>
 
-                <div className="w-full max-w-lg">
+                <div className="relative w-full">
                     {/* Loading and error states remain the same */}
 
                     {!isLoading && !error && sortedCasts.length > 0 ? (
