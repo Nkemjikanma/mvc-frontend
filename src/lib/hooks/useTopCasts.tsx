@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import type { CastResponse } from "../types";
 
-const server = "http://localhost:8787";
+// const server = "http://localhost:8787";
+const server = "https://mvc-server.nkem.workers.dev";
 
 const getUserCasts = async (fid?: number): Promise<CastResponse> => {
     if (!fid) {

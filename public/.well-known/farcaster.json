@@ -1,0 +1,18 @@
+{
+    "accountAssociation": {
+        "header": "eyJmaWQiOjQwNTk0MSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEQxYTQxODBmN0Y5MmE3YjM5YjFlRUNDN0Q2MUU1NzNFOTY1QTVjRmMifQ",
+        "payload": "eyJkb21haW4iOiJtdmMub3JiaXRlci53ZWJzaXRlIn0",
+        "signature": "MHg2YzNjMTFiMDhhNTY1YzIwZjhhMzJiMTYzZWUyODg0YzIxMDUzMzkzNDljN2Q4NjU4OGIwZmQwOTEwNDY4NmRjMzlmNjNlODliZjA2ODllNjM2NDFmMzg3NmRiNTI5ODk1NjZkNGVhOTZkNWQzYWNkOTBkYmY1Zjk1ZDBiNGZmMzFj"
+    },
+    "frame": {
+        "version": "1",
+        "name": "MVC",
+        "iconUrl": "https://mvc.orbiter.website/image.png",
+        "homeUrl": "https://mvc.orbiter.website",
+        "imageUrl": "https://mvc.orbiter.website/image.png",
+        "buttonTitle": "View cast performance",
+        "splashImageUrl": "https://mvc.orbiter.website/image.png",
+        "splashBackgroundColor": "#eeccff",
+        "webhookUrl": "https://mvc.orbiter.website/api/webhook"
+    }
+}
